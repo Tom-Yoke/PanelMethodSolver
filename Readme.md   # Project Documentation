@@ -1,0 +1,15 @@
+ Explanation of Each File
+1. airfoil.py (Handles Airfoil Generation & Loading)
+Generates NACA 4-digit airfoils.
+Loads airfoils from .dat files.
+2. panels.py (Panel Discretization)
+Discretizes the airfoil shape into panels (line segments).
+Computes panel normals, tangents, and control points.
+3. solver.py (Implements the Panel Method)
+Solves for source/sink and vortex strengths.
+Computes velocity and pressure distribution.
+4. visualize.py (Handles Plotting)
+Plots the airfoil shape, panel distribution, velocity field, etc.
+5. main.py (Runs the Full Solver)
+Calls the functions from all other files.
+Controls execution flow.
