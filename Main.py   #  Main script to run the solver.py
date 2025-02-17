@@ -1,6 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# ==========================
+# Header: Simulation Parameters
+# ==========================
+
+# Airfoil Selection
+AIRFOIL_TYPE = "NACA4"  # Options: "NACA4", "ELLIPSE", "FILE"
+NACA4_PARAMS = {"m": 0.02, "p": 0.4, "t": 0.12}  # Only used if AIRFOIL_TYPE is "NACA4"
+AIRFOIL_FILENAME = "airfoil.dat"  # Only used if AIRFOIL_TYPE is "FILE"
+
+# Geometry
+NUM_PANELS = 100  # Number of points/panels for discretization
+ELLIPSE_PARAMS = {"a": 1.0, "b": 0.2}  # Only used if AIRFOIL_TYPE is "ELLIPSE"
+
+# Flow Conditions
+ANGLE_OF_ATTACK = 10.0  # Degrees
+
+# Display Settings
+SHOW_AIRFOIL_SHAPE = True
+
+# ==========================
+# Functions for Airfoil Generation
+# ==========================
 
 def naca4(m, p, t, num_points=100):
     """Generate a NACA 4-digit airfoil."""
@@ -60,15 +82,30 @@ def plot_airfoil(x, y, title="Airfoil Shape"):
     plt.show()
 
 
+# ==========================
+# Main Execution
+# ==========================
+
 if __name__ == "__main__":
-    # Example: Generate NACA 2412
-    x, y = naca4(m=0.02, p=0.4, t=0.12)
-    plot_airfoil(x, y, "NACA 2412 Airfoil")
+    # Generate airfoil based on selected type
+    if AIRFOIL_TYPE == "NACA4":
+        x, y = naca4(**NACA4_PARAMS, num_points=NUM_PANELS)
+        title = f"NACA {int(NACA4_PARAMS['m']*100)}{int(NACA4_PARAMS['p']*10)}{int(NACA4_PARAMS['t']*100)} Airfoil"
 
-    # Example: Generate an ellipse airfoil
-    x_ellipse, y_ellipse = ellipse_airfoil(a=1.0, b=0.2)
-    plot_airfoil(x_ellipse, y_ellipse, "Ellipse Airfoil")
+    elif AIRFOIL_TYPE == "ELLIPSE":
+        x, y = ellipse_airfoil(**ELLIPSE_PARAMS, num_points=NUM_PANELS)
+        title = "Ellipse Airfoil"
 
-    # Example: Rotate airfoil by 10 degrees
-    x_rot, y_rot = rotate_airfoil(x, y, angle=10)
-    plot_airfoil(x_rot, y_rot, "NACA 2412 Airfoil at 10 Degrees Angle of Attack")
+    elif AIRFOIL_TYPE == "FILE":
+        x, y = load_airfoil(AIRFOIL_FILENAME)
+        title = "Loaded Airfoil from File"
+
+    else:
+        raise ValueError(f"Invalid AIRFOIL_TYPE: {AIRFOIL_TYPE}")
+
+    # Rotate the airfoil
+    x, y = rotate_airfoil(x, y, ANGLE_OF_ATTACK)
+
+    # Plot the airfoil
+    if SHOW_AIRFOIL_SHAPE:
+        plot_airfoil(x, y, title=f"{title} at {ANGLE_OF_ATTACK} Degrees")
